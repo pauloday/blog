@@ -1,0 +1,17 @@
+---
+layout: default
+---
+
+<div class="home">
+
+  <h1>Projects</h1>
+
+  <ul class="posts">
+    {% for project in site.projects %}
+      <li>
+        <a class="post-link" href="{{ project.url | prepend: site.baseurl }}"><h1>{{ project.title }}</h1></a>
+      </li>
+    {% endfor %}
+  </ul>
+
+</div>
