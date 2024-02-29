@@ -6,7 +6,7 @@ theme = 'terminal'
   [languages.en]
     title = "Paul O'Day"
     keywords = "programming"
-    copyright = "2024"
+    copyright = "Paul O'Day, 2024"
     menuMore = "Show more"
     readMore = "Read more"
     readOtherPosts = "Read other posts"
