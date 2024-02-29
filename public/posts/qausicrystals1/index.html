@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  
+    <title>Psychedelic Quasicrystals (Part 1 of 2) :: Paul O&#39;Day</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Years ago I read an article about how to generate a neat animation of a quasicrystal. A quasicrystal is an ordered structure that is not periodic. Because it&amp;rsquo;s ordered it can fill an infinite sized space, but since it&amp;rsquo;s not periodic it doesn&amp;rsquo;t have symmetry. The classic example of this is Penrose tiles, you can use them to fill any sized space by matching the colors of the tiles, but it doesn&amp;rsquo;t create a symmetrical repeating pattern." />
+<meta name="keywords" content="programming" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="http://localhost:1313/posts/qausicrystals1/" />
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="http://localhost:1313/styles.css">
+
+
+
+
+
+
+
+  <link rel="shortcut icon" href="http://localhost:1313/img/theme-colors/pink.png">
+  <link rel="apple-touch-icon" href="http://localhost:1313/img/theme-colors/pink.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Psychedelic Quasicrystals (Part 1 of 2)">
+<meta property="og:description" content="Years ago I read an article about how to generate a neat animation of a quasicrystal. A quasicrystal is an ordered structure that is not periodic. Because it&amp;rsquo;s ordered it can fill an infinite sized space, but since it&amp;rsquo;s not periodic it doesn&amp;rsquo;t have symmetry. The classic example of this is Penrose tiles, you can use them to fill any sized space by matching the colors of the tiles, but it doesn&amp;rsquo;t create a symmetrical repeating pattern." />
+<meta property="og:url" content="http://localhost:1313/posts/qausicrystals1/" />
+<meta property="og:site_name" content="Paul O&#39;Day" />
+
+  
+    <meta property="og:image" content="http://localhost:1313/img/favicon/pink.png">
+  
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2024-02-28 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="pink">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="http://localhost:1313/">
+  <div class="logo">
+    Paul O&#39;Day
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="/about" >About</a></li>
+        
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="http://localhost:1313/posts/qausicrystals1/">Psychedelic Quasicrystals (Part 1 of 2)</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2024-02-28</time></div>
+
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <p>Years ago I read an <a href="http://mainisusuallyafunction.blogspot.com/2011/10/quasicrystals-as-sums-of-waves-in-plane.html">article</a> about how to generate a neat animation of a quasicrystal. A quasicrystal is an ordered structure that is not periodic. Because it&rsquo;s ordered it can fill an infinite sized space, but since it&rsquo;s not periodic it doesn&rsquo;t have symmetry. The classic example of this is Penrose tiles, you can use them to fill any sized space by matching the colors of the tiles, but it doesn&rsquo;t create a symmetrical repeating pattern. The animation mentioned in that article is composed of overlapping sine waves rotated at different angles.</p>
+<p>I thought this was extremely cool and had a lot of potential to make interesting psychedelic animations. Of course greyscale is boring, and I wanted to play around with the parameters, so I&rsquo;d have to modify the original code. For example this image is generated with 7 overlapping waves rotated evenly from 0 to 360:</p>
+<p><img alt="7 layer quasicrystal" src="/quasicrystals/7added.jpg"></p>
+<p>But what happens if angle one is 0, angle 2 is 180, and the rest are evenly split between 180-360? And what happens if we have 27 overlapping images?</p>
+<p>In an effort to answer these questions, I ported the original Haskell code to Clojure. I chose Clojure because it&rsquo;s easy to play with parts of a program using the REPL, and I knew Clojure better than Haskell. This taught me how the math works, but it was also very slow. So instead of answering my questions with the Clojure version, I ported it to Rust so I could play around with it easier since I wouldn&rsquo;t have to wait so long for animations to generate.</p>
+<p>I&rsquo;m going to split this into 2 articles to keep them focused. In this article I&rsquo;ll use the simpler Clojure implementation to explain how these images are composed6; this should give you a good understanding of how this program works on an abstract level. Don&rsquo;t worry if you don&rsquo;t know Clojure, you should still be able to understand the basics from looking at the images and my explanations. Then, in the next article I&rsquo;ll go over the more complex multi-threaded Rust implementation, and show off some cool animations.</p>
+<h1 id="how-it-works">How it works<a href="#how-it-works" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>The original post does a good job of explaining the math, but I&rsquo;ll go over it again here. Each frame of these animations is composed of several waveforms projected into 2d space, rotated, and combined. Each wave form looks like a bunch of stripes - here the values from 0 to 1 are rendered as a gradient from black (0), to white (1):</p>
+<p><img alt="A waveform with no rotation" src="/quasicrystals/vertstripe.jpg"></p>
+<p>To animate it, we simply move the wave forward. The number that defines how far forward wave is moved is called the phase:</p>
+<p><img alt="A waveform animated" src="/quasicrystals/vertanim.gif"></p>
+<p>And this is the Clojure code to generate one frame of animation:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>wave
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;Returns waveform, the cos of all the y-values rotated by theta and moved
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">forward by phase&#34;</span>
+</span></span><span style="display:flex;"><span>  [theta x y phase]
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">let </span>[cth (<span style="color:#a6e22e">Math/cos</span> theta)
+</span></span><span style="display:flex;"><span>        sth (<span style="color:#a6e22e">Math/sin</span> theta)]
+</span></span><span style="display:flex;"><span>    (/ (+ (<span style="color:#a6e22e">Math/cos</span> (+ (* cth x) (* sth y) phase)) <span style="color:#ae81ff">1</span>) <span style="color:#ae81ff">2</span>)))
+</span></span><span style="display:flex;"><span>    
+</span></span></code></pre></div><p>A more formal way to write the equation in this function would be:</p>
+$$ \frac{\cos(x\cos(\theta) + y\sin(\theta) + phase) + 1}{2} $$
+<p>Where \(\theta\) is the angle of the wave (e.g. 0 means the stripes are vertical), and \(phase\) is a number from 0-1. Note that this only generates numbers between 0 and 1, translating those into pixels of an image is a later step.</p>
+<p>Next we have a simple function to generate a list of numbers evenly spaced between 0 and \(\pi\). These are the angles of the different layers:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>angles
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;Returns a list of n angles between 0 and PI&#34;</span>
+</span></span><span style="display:flex;"><span>  [n]
+</span></span><span style="display:flex;"><span>  (for [m (range n)] (* m (/ Math/PI n))))
+</span></span></code></pre></div><p>This is done by taking each number from 0 to \(n\) and multiplying them by \(\pi\)/\(n\). These numbers will be fed into the theta argument of the wave function.</p>
+<p>Next we have to combine the images. To do this we add the numbers of each pixel together, then wrap it between 0 and 1. This means is as the summed value goes from 0 to 1 the wrapped output goes from 0 to 1, then as the sum goes from 1 to 2 the wrapped output goes from 1 to 0, then 2-3 outputs 0 to 1, etc. For example adding two perpendicular waves gives us this:</p>
+<p><img alt="2 waveforms added and wrapped" src="/quasicrystals/2added.jpg"></p>
+<p>This is the Clojure code to add and wrap values</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>combine
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;Combines a list of values, and wraps the result between 1 and 0&#34;</span>
+</span></span><span style="display:flex;"><span>  [wavs]
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">let </span>[ws (reduce + wavs)]
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">if </span>(<span style="color:#a6e22e">odd?</span> (int ws))
+</span></span><span style="display:flex;"><span>      (- <span style="color:#ae81ff">1</span> (<span style="color:#a6e22e">mod</span> ws <span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>      (<span style="color:#a6e22e">mod</span> ws <span style="color:#ae81ff">1</span>))))
+</span></span></code></pre></div><p>To make the wrapped output we simply sum the inputs, then use the modulus operator to isolate the decimal part. Then if the non-decimal part is odd we&rsquo;re going from 1 to 0, so we subtract the decimal part from 1. If the non-decimal is even we can just return the decimal part.</p>
+<p>Finally we can combine these into a function that generates the values for one frame of animation:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>crystal
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;Returns a vector in the form [x y shade] where shade is the color at x and y&#34;</span>
+</span></span><span style="display:flex;"><span>  [max-x max-y phase num-angles]
+</span></span><span style="display:flex;"><span>  (for [x (range max-x) y (range max-y)]
+</span></span><span style="display:flex;"><span>    [x y
+</span></span><span style="display:flex;"><span>     (<span style="color:#a6e22e">combine</span>
+</span></span><span style="display:flex;"><span>      (map (<span style="color:#66d9ef">fn </span>[th] (<span style="color:#a6e22e">wave</span> th x y phase))
+</span></span><span style="display:flex;"><span>           (<span style="color:#a6e22e">angles</span> num-angles)))]))
+</span></span></code></pre></div><p>This function takes the x and y dimensions, phase (aka frame of animation), and how many overlapping waves to use. It&rsquo;s pretty straightforward; we just use the angles function to make a list of angles, then map the wave function over that list, then use the combine function to sum and wrap each value. This is repeated for each pixel of the image, and voila, we have the color values for a single frame.</p>
+<p>Here&rsquo;s what it looks like when we add 3, 4, and 5 layers:</p>
+<p><img alt="3 waveforms added and wrapped" src="/quasicrystals/3added.jpg"></p>
+<p><img alt="4 waveforms added and wrapped" src="/quasicrystals/4added.jpg"></p>
+<p><img alt="5 waveforms added and wrapped" src="/quasicrystals/5added.jpg"></p>
+<p>I don&rsquo;t know when these start being quasicrystals, but my goal is to make neat animations so I don&rsquo;t really care. The original article used 7 layers, and 3 definitely isn&rsquo;t a quasicrystal. 4 might be, so maybe it&rsquo;s every number after 3, or every odd or prime number after 3. As you add more layers you have to zoom out to see the pattern, here&rsquo;s 19 layers with the same zoom as the previous images:</p>
+<p><img alt="19 waveforms added and wrapped" src="/quasicrystals/19added.jpg"></p>
+<p>And a zoomed out and enlarged version (this was produced with my Rust code; the Clojure version can&rsquo;t do different zoom levels):</p>
+<p><img alt="19 waveforms added and wrapped, zoomed out" src="/quasicrystals/19addedsmaller.jpg"></p>
+<p>I won&rsquo;t go into detail for writing those values to an image or generating a list of frames as there are a lot of ways to do it and the way I picked is pretty slow. The summary is: I used Java&rsquo;s <code>BufferedImage</code> class and a function to translate the 0-1 values into RGB values to output each frame as a jpg, then combined those with imagemagick into an animation. Combining them into a gif using Clojure was tricky and by that time I had already decided to make a Rust version.</p>
+<h1 id="adding-color">Adding Color<a href="#adding-color" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>The function to translate a 0-1 value into a RGB pixel (i.e. 3 values from 0-255) is worth talking about. This is where you can get creative, there are a lot of ways to translate a value between 0 and 1 to a color. Astronomers have <a href="https://www.allthesky.com/articles/imagecolor.html">explored</a> this problem, as many telescopes only give a grayscale image, and adding color helps understand what they&rsquo;re seeing. The simplest is obviously using 0 as one color (e.g. black) and 1 as another (e.g. white) for a basic gradient. One way I came up with is to map each r, g, and b value to a sawtooth wave that goes from 0 to 255, starting with some offset. For example an offset of 0.5 would start at 128 then go through 255, back to 0, then up to 128 again over the course of the animation. I believe this is just a way of implementing an animated version of the false color composite from that astronomy page, but I could be wrong - I just made it up to get something colorful. This is 6 overlapping layers with a red offset of 0, green of 0.25, and blue of 0.5:</p>
+<p><img alt="6 added waveforms colorized" src="/quasicrystals/colorful6added.gif"></p>
+<p>This is very cool, but also very slow to generate, taking around 10 minutes on my old Macbook. In the next article I&rsquo;ll go over the multithreaded Rust implementation of this program which is much faster. I also added a couple more parameters to tweak (such as zoom level), so I&rsquo;ll show a gallery of animations generated with different settings. The code is on <a href="https://github.com/pauloday/quasicrystals/tree/master">Github</a>, the <a href="https://github.com/pauloday/quasicrystals/tree/clojure">Clojure</a> version is in a branch.</p>
+
+      </div></div>
+
+  
+
+  
+    
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>2024</span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+baseURL = 'https://pauloday.com/'
+languageCode = 'en-us'
+title = "Paul O'Day"
+theme = 'terminal'
+[languages]
+  [languages.en]
+    title = "Paul O'Day"
+    keywords = "programming"
+    copyright = "2024"
+    menuMore = "Show more"
+    readMore = "Read more"
+    readOtherPosts = "Read other posts"
+ [languages.en.params.logo]
+    logoText = "Paul O'Day"
+ [languages.en.menu]
+    [[languages.en.menu.main]]
+      identifier = "about"
+      name = "About"
+      url = "/about"
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [['\[', '\]'], ['$$', '$$']]
+          inline = [['\(', '\)']]
+[params]
+  custom_css = ['css/image.css']
+  themeColor = "pink"
+  centerTheme = true
+
+
