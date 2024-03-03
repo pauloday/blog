@@ -27,7 +27,7 @@ theme = 'terminal'
           inline = [['\(', '\)']]
 [params]
   custom_css = ['css/image.css']
-  themeColor = "pink"
+  themeColor = "purple"
   centerTheme = true
 
 

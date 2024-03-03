@@ -1,5 +1,5 @@
 +++
-title = 'Psychedelic Quasicrystals (Part 1 of 2)'
+title = 'CLojure Quasicrystals'
 date = 2024-02-28
 draft = false
 math = true
@@ -97,11 +97,11 @@ Here's what it looks like when we add 3, 4, and 5 layers:
 
 ![5 waveforms added and wrapped](/quasicrystals/5added.jpg)
 
-I don't know when these start being quasicrystals, but my goal is to make neat animations so I don't really care. The original article used 7 layers, and 3 definitely isn't a quasicrystal. 4 might be, so maybe it's every number after 3, or every odd or prime number after 3. As you add more layers you have to zoom out to see the pattern, here's 19 layers with the same zoom as the previous images:
+I'm not sure when these start being quasicrystals, but my goal is to make neat animations so I don't really care. The original article used 7 layers, and 3 definitely isn't a quasicrystal. 4 seems like it is, so maybe it's every number after 3, but it might not be zoomed out enough to see the full pattern. As you add more layers you have to zoom out to see an interesting pattern, here's 19 layers with the same zoom as the previous images:
 
 ![19 waveforms added and wrapped](/quasicrystals/19added.jpg)
 
-And a zoomed out and enlarged version (this was produced with my Rust code; the Clojure version can't do different zoom levels):
+And a zoomed out and enlarged version:
 
 ![19 waveforms added and wrapped, zoomed out](/quasicrystals/19addedsmaller.jpg)
 

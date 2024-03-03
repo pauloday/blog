@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  
+    <title>Psychedelic Quasicrystals in Rust :: Paul O&#39;Day</title>
+  
+  
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script>
+  MathJax = {
+    tex: {
+      displayMath: [['\\[', '\\]'], ['$$', '$$']],  
+      inlineMath: [['\\(', '\\)']]                  
+    }
+  };
+</script>
+
+
+
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Rust quasicrystals This is part 2 of this article, where I go over the multithreaded Rust implementation. This will be quite a bit longer than going over the Clojure version, so I&amp;rsquo;m going to a do a part 3 where I take a look at how messing with different parameters affects the output. Part 1 goes more in depth on the math, so if you want to understand this program on a more abstract level that&amp;rsquo;s where to look." />
+<meta name="keywords" content="programming" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="http://localhost:1313/posts/rustquasi/" />
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="http://localhost:1313/styles.css">
+
+
+
+
+
+
+
+  <link rel="shortcut icon" href="http://localhost:1313/img/theme-colors/purple.png">
+  <link rel="apple-touch-icon" href="http://localhost:1313/img/theme-colors/purple.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Psychedelic Quasicrystals in Rust">
+<meta property="og:description" content="Rust quasicrystals This is part 2 of this article, where I go over the multithreaded Rust implementation. This will be quite a bit longer than going over the Clojure version, so I&amp;rsquo;m going to a do a part 3 where I take a look at how messing with different parameters affects the output. Part 1 goes more in depth on the math, so if you want to understand this program on a more abstract level that&amp;rsquo;s where to look." />
+<meta property="og:url" content="http://localhost:1313/posts/rustquasi/" />
+<meta property="og:site_name" content="Paul O&#39;Day" />
+
+  
+    <meta property="og:image" content="http://localhost:1313/img/favicon/purple.png">
+  
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2024-03-03 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="purple">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="http://localhost:1313/">
+  <div class="logo">
+    Paul O&#39;Day
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="/about" >About</a></li>
+        
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="http://localhost:1313/posts/rustquasi/">Psychedelic Quasicrystals in Rust</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2024-03-03</time></div>
+
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <h1 id="rust-quasicrystals">Rust quasicrystals<a href="#rust-quasicrystals" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<p>This is part 2 of <a href="/">this</a> article, where I go over the multithreaded Rust implementation. This will be quite a bit longer than going over the Clojure version, so I&rsquo;m going to a do a part 3 where I take a look at how messing with different parameters affects the output. Part 1 goes more in depth on the math, so if you want to understand this program on a more abstract level that&rsquo;s where to look.</p>
+<p>The Rust version has more features than the Clojure version. You can adjust the zoom level as well offset the viewport. You can also adjust the angles of each layer independently, or make the angles of the layers change over the course of the animation, and you can adjust the speed of the animation. It&rsquo;s also more documented and has a better architecture, so it should be easier to extend. We&rsquo;ll go over it file by file, but I won&rsquo;t look at every single function, just the interesting ones.</p>
+<p>Here&rsquo;s an animation generated with 7 layers that have angles that change over the course of the animation. I don&rsquo;t think it&rsquo;s technically a quasicrystal (maybe for a few frames), but it is pretty neat:</p>
+<p><img alt="7 spinning layers" src="/quasicrystals/spin.webp"></p>
+<p>Command to generate these frames: <code>quasicrystals 200 200 0:100,0:86:100,0:72:100,0:58:100,0:44:100,0:30:100,0:16:100 20 -p -f 120 -t 4 -s 0 -c greyscale 127</code></p>
+<h2 id="optsrs">opts.rs<a href="#optsrs" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>This is where the input options are defined. I used <a href="https://docs.rs/clap/latest/clap/">clap</a> to define the command line arguments, but the opts struct is generic and could be used by other Rust code if you wanted to use this as a library instead of a command line program. This would require some minor modification in <code>main.rs</code> though.</p>
+<h2 id="parsers">parse.rs<a href="#parsers" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>This is where the input is parsed into data structures for the generation functions to use. Except for the angles and colorizer, everything can just be parsed with built in Rust parsers as you can see in <code>parse_image</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">parse_image</span>(opts: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">Opts</span>, frame: <span style="color:#66d9ef">u32</span>) -&gt; <span style="color:#a6e22e">Image</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> Image {
+</span></span><span style="display:flex;"><span>        phases: <span style="color:#a6e22e">opts</span>.speed,
+</span></span><span style="display:flex;"><span>        frame: <span style="color:#a6e22e">frame</span>,
+</span></span><span style="display:flex;"><span>        frames: <span style="color:#a6e22e">opts</span>.frames,
+</span></span><span style="display:flex;"><span>        scale: <span style="color:#a6e22e">opts</span>.scale,
+</span></span><span style="display:flex;"><span>        width: <span style="color:#a6e22e">opts</span>.width,
+</span></span><span style="display:flex;"><span>        height: <span style="color:#a6e22e">opts</span>.height,
+</span></span><span style="display:flex;"><span>        x_offset: <span style="color:#a6e22e">opts</span>.x_offset,
+</span></span><span style="display:flex;"><span>        y_offset: <span style="color:#a6e22e">opts</span>.y_offset,
+</span></span><span style="display:flex;"><span>        angles: <span style="color:#a6e22e">parse_angles</span>(<span style="color:#f92672">&amp;</span>opts.angles, frame, opts.frames, opts.percent),
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This struct defines all the information we&rsquo;ll need to get the 2d arrays of 0-1 values that represent shades. Converting them into pixels requires a colorizer. The function that does this is <code>parse_colorizer</code> which basically translates some strings into a more formal struct, I won&rsquo;t go over it here.</p>
+<p>Parsing the angles is more complex, as there are several ways to specify them. The most basic is a single number, which gets converted to a list of that many equal proportions, which is then converted to a list of angle rotations. You can also pass the proportions directly as a comma separated list of either fractions, percentages, or numbers. On top of that, all of these values can be changed over the course of the animation by passing multiple numbers separated by &ldquo;:&rdquo;.</p>
+<p>A list of proportions is a description of how big the angles are in relation to each other. So 1,1,2 means 2 equal angles, then 1 angle that is twice as big as each of the first 2 (or as big as both of them combined). If you pass the -p (or &ndash;percent) argument, you can specify the angles as fractions or percentages, so instead of 1,1,2 you could say 25,25,50, or 1/4,1/4,1/2. This allows you to pass a list of angles that don&rsquo;t add up to a full circle, like 10,10,10.</p>
+<p>Parsing a list of percents is easy, we divide by 100 then multiply them by the unit circle (\(2\pi\) or \(\tau\)) to get the angle in radians.</p>
+<p>To handle a list of proportions we use <code>proportions_to_angles</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">proportions_to_angles</span>(props: Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">f64</span><span style="color:#f92672">&gt;</span>) -&gt; Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">f64</span><span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> circle_sects <span style="color:#f92672">=</span> <span style="color:#66d9ef">TAU</span> <span style="color:#f92672">/</span> props.iter().sum::<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">f64</span><span style="color:#f92672">&gt;</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> sums <span style="color:#f92672">=</span> vec![props[<span style="color:#ae81ff">0</span>]];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> p <span style="color:#66d9ef">in</span> <span style="color:#f92672">&amp;</span>props[<span style="color:#ae81ff">1</span><span style="color:#f92672">..</span>] {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> sum_to_p <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>p <span style="color:#f92672">+</span> sums.last().unwrap();
+</span></span><span style="display:flex;"><span>        sums.push(sum_to_p);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> sums.iter().map(<span style="color:#f92672">|</span>s<span style="color:#f92672">|</span> s <span style="color:#f92672">*</span> circle_sects).collect();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This takes a list of proportion values and converts them to angles of rotation for each layer. For example if our proportions are 1,2,1, the first layer is rotated 90 degrees, the next 180 degrees from the first, and the last 90 degrees from the second. First we find a common factor angle that can add up to each of these rotations. In this example it&rsquo;d be 90. Then we make a list of how many of those angles we need to add up to the rotation for each layer. To do this we just add all the preceding values to each proportion in the list. So 1,2,1 becomes 1,3,4. Then we just multiply those values by the common factor angle to find the total rotation for each layer.</p>
+<p>To parse an angle we check if it&rsquo;s an animation then either parse the animation or parse the string into a number, handling fractions if needed. This is done in <code>parse_angle</code>. An animated angle is defined by &ldquo;:&rdquo; separated numbers which are basically keyframes to transition between. For example 1:10 means transition the number from 1 to 10 over the animation, so at half way &ldquo;1:10&rdquo; becomes &ldquo;5&rdquo;. Here&rsquo;s the code to handle that:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">parse_animation</span>(anim_str: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">str</span>, frame: <span style="color:#66d9ef">u32</span>, frames: <span style="color:#66d9ef">u32</span>) -&gt; <span style="color:#66d9ef">f64</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> stages: Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">f64</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">=</span> anim_str.split(<span style="color:#e6db74">&#39;:&#39;</span>).map(parse_maybe_frac).collect();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> trans_frames: <span style="color:#66d9ef">f64</span> <span style="color:#f92672">=</span> frames <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">f64</span> <span style="color:#f92672">/</span> (stages.len() <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">f64</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> from_stage <span style="color:#f92672">=</span> stages
+</span></span><span style="display:flex;"><span>        .get((frame <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">f64</span> <span style="color:#f92672">/</span> trans_frames).floor() <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>)
+</span></span><span style="display:flex;"><span>        .unwrap();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> to_stage <span style="color:#f92672">=</span> stages
+</span></span><span style="display:flex;"><span>        .get((frame <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">f64</span> <span style="color:#f92672">/</span> trans_frames).ceil() <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>)
+</span></span><span style="display:flex;"><span>        .unwrap();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 4
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> trans_prog <span style="color:#f92672">=</span> (frame <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">f64</span> <span style="color:#f92672">%</span> trans_frames) <span style="color:#f92672">/</span> trans_frames;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 5
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> (trans_prog <span style="color:#f92672">*</span> (to_stage <span style="color:#f92672">-</span> from_stage)) <span style="color:#f92672">+</span> from_stage;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol>
+<li>Divide the number of frames by the number of animation stages to get the frames per stage</li>
+<li>Take current frame number and divide it by the frames per stage rounded down to get the stage we&rsquo;re transitioning from. Then grab the number for that stage</li>
+<li>Then do the same but round up to get the number we&rsquo;re transitioning to</li>
+<li>Take current frame % frames per stage to get how far into the stage we are, and divide it by frames per stage to get a percent. For example, if we&rsquo;re on frame 10 and the stages are 3 frames each, we&rsquo;re 1 frame into a stage, or 1/3 of the way through.</li>
+<li>The difference between the number we&rsquo;re coming from and going to is how much the number changes over this stage, so multiply that by how far we are through the stage. Then we have to add the number we&rsquo;re coming from to get the number for this frame</li>
+</ol>
+<h2 id="crystalrs">crystal.rs<a href="#crystalrs" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>This file is basically where we implement the actual waveform generation. I won&rsquo;t go over this it&rsquo;s just a Rust version of the Clojure code with the addition of an offset factor for each coordinate.</p>
+<h2 id="colorrs">color.rs<a href="#colorrs" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>These are the functions to convert the 0-1 shade values into colored pixel values. For greyscale we take a brightness factor from 0 (all black) to 255 (all white) and plug it into this formula: \(2*brightness - 255 + shade\) then convert it to an 8-bit number. This conversion will round the shade up or down and give us a greyscale image.</p>
+<p>For the sawtooth colors we just generate a sawtooth wave going from 0 to 255 over the course of the animation. Then for each color we select a point offset by some value, which is the percent through the wave that color will start. So if the offset is 0, we select 0 from the wave for the first frame, 127 for the halfway frame, and 255 for the last. If it&rsquo;s 0.5 we select 127 for the first frame, 255 for the midpoint, and 126 for the last.</p>
+<p>For composite colors we take a range of shade values and a range of 8-bit color values for each color channel. Then we just convert from the shade range to the 8-bit range to get the pixel color. The ranges can overlap but they don&rsquo;t have to. This is an implementation of the 3 color composite mapping mentioned <a href="https://www.allthesky.com/articles/imagecolor.html">here</a>. Thee composite colors can be animated just like the angles, both the input and output ranges can be animated. For example, here&rsquo;s 7 even layers with a composite animation but no phase or angle animation:</p>
+<p><img alt="7 layers with color animation" src="/quasicrystals/coloranimation.webp"></p>
+<p>To generate the frames of this animation: <code>quasicrystals 150 150 7 20 -p -f 48 -t 4 -s 0 -c composite 0:.3:.6:.3:0-.3:.6:1:.6:.3,.3:0:.3:.6:.3-.6:.3:.6:1:.6,.6:.3:0:.3:.6-1:.6:.3:.6:1</code></p>
+<h2 id="outputrs">output.rs<a href="#outputrs" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>This is where the file writing happens. Currently there are two ways to output files, as a gif or as a series of frame images. Both of these are very simple, they just take a vector of image data structures and write them to the disk using the Rust Image library. Gif writing is supported by that library so we just pass the images along and it handles the rest. Frame writing is just a for loop that writes each image with the same library.</p>
+<h2 id="mainrs">main.rs<a href="#mainrs" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>This is where everything gets tied together and multithreaded. By default it uses one thread, but you can specify more with the <code>-t</code>/<code>--threads</code> options. The <code>main</code> function is pretty long we&rsquo;ll look at it in parts.</p>
+<p>First we parse the input options, check if we have a valid output file, and decide how many threads to use. This is where the <code>parse.rs</code> functions are called.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> opts: <span style="color:#a6e22e">input</span>::Opts <span style="color:#f92672">=</span> input::Opts::parse();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> frames <span style="color:#f92672">=</span> opts.frames;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> num_threads <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> frames <span style="color:#f92672">&lt;</span> opts.threads {
+</span></span><span style="display:flex;"><span>        frames
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        opts.threads
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> (sender, receiver) <span style="color:#f92672">=</span> channel();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> opt_frames: Vec<span style="color:#f92672">&lt;</span>Option<span style="color:#f92672">&lt;</span>RgbaImage<span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">=</span> vec![None; frames <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> opts.image_format <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;gif&#34;</span> { 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> opts.output <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;./&#34;</span> {
+</span></span><span style="display:flex;"><span>            println!(<span style="color:#e6db74">&#34;Must set output flag when writing gifs&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> Path::new(<span style="color:#f92672">&amp;</span>opts.output).exists() {
+</span></span><span style="display:flex;"><span>            println!(<span style="color:#e6db74">&#34;File </span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> exists, exiting&#34;</span>, opts.output);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    println!(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;Generating </span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> frames at </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">x</span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> with angles </span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> and scale </span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> using </span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> threads&#34;</span>,
+</span></span><span style="display:flex;"><span>        frames, opts.width, opts.height, opts.angles, opts.scale, num_threads
+</span></span><span style="display:flex;"><span>    );
+</span></span></code></pre></div><p>Then we spawn the thread(s) that generate the shade values for each frame:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> frames <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">||</span> num_threads <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> frame_thread <span style="color:#f92672">=</span> gen_frames_thread(
+</span></span><span style="display:flex;"><span>            frames,
+</span></span><span style="display:flex;"><span>            num_threads,
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>            sender.clone(),
+</span></span><span style="display:flex;"><span>            opts.verbose
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>        frame_thread.join().unwrap();
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> threads: Vec<span style="color:#f92672">&lt;</span>thread::JoinHandle<span style="color:#f92672">&lt;</span>_<span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">=</span> Vec::new();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> thread_num <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>num_threads {
+</span></span><span style="display:flex;"><span>            threads.push(gen_frames_thread(
+</span></span><span style="display:flex;"><span>                    frames,
+</span></span><span style="display:flex;"><span>                    num_threads,
+</span></span><span style="display:flex;"><span>                    thread_num,
+</span></span><span style="display:flex;"><span>                    sender.clone(),
+</span></span><span style="display:flex;"><span>                    opts.verbose
+</span></span><span style="display:flex;"><span>            ));
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> thread <span style="color:#66d9ef">in</span> threads {
+</span></span><span style="display:flex;"><span>            thread.join().unwrap();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>We use channels to pass the frames back to the main thread, this is where they&rsquo;re received. We have to receive them inside a struct that also has which frame it is, because they aren&rsquo;t necessarily going to be sent back to the main thread in the correct order. To order them we have a vec with length equal to the number of frames, pre-initialized with None. When a frame is received, we take the frame data and put it into the correct spot of the vec wrapped in a Some.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">let</span> Ok(result) <span style="color:#f92672">=</span> receiver.try_recv() {
+</span></span><span style="display:flex;"><span>        opt_frames[result.number <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>] <span style="color:#f92672">=</span> Some(result.frame);
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>Finally we can pass the vec of Some(frame)s on to the image writing functions where they&rsquo;ll be unwrapped and written to the output location:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> opts.image_format <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;gif&#34;</span> <span style="color:#f92672">||</span> opts.output.ends_with(<span style="color:#e6db74">&#34;.gif&#34;</span>) {
+</span></span><span style="display:flex;"><span>        output::write_gif(opts.output, opt_frames, opts.allow_overwrite);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>       output::write_frames(
+</span></span><span style="display:flex;"><span>           opts.image_format,
+</span></span><span style="display:flex;"><span>           opt_frames,
+</span></span><span style="display:flex;"><span>           opts.output.clone(),
+</span></span><span style="display:flex;"><span>           opts.verbose,
+</span></span><span style="display:flex;"><span>           opts.allow_overwrite
+</span></span><span style="display:flex;"><span>        );
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The threads are spawned with the <code>gen_frames_thread</code> function. I&rsquo;ll just summarize it since it&rsquo;s pretty simple. It just calculates how many frames the thread should generate using the current thread number and the total number of frames. The last thread rounds up if needed, to account for the number of frames not splitting evenly into the number of threads. Then it&rsquo;s just a for loop to call the <code>gen</code> function from <code>crystal.rs</code> for each frame. As each frame is generated, it&rsquo;s put into a struct along with the frame number and sent back to <code>main.rs</code> for final processing. This function is also where the colorizer is parsed from the command line.</p>
+<p>And that&rsquo;s it! I glossed over a bunch to save space, but this should give you a pretty good idea of how this code is structured and what it does. In the next part of this series I won&rsquo;t go over any code, instead I&rsquo;ll look at a bunch of animations like this to get a more intuitive idea of where these patterns come from.</p>
+<p><img alt="spinning waves, animated colors" src="/quasicrystals/spincolor.webp"></p>
+<p><code>quasicrystals 150 150 0:100,0:86:100,0:72:100,0:58:100,0:44:100,0:30:100,0:16:100 20 -p -f 120 -t 4 -s 0 -c composite 0:.3:.6:.3:0-.3:.6:1:.6:.3,.3:0:.3:.6:.3-.6:.3:.6:1:.6,.6:.3:0:.3:.6-1:.6:.3:.6:1</code></p>
+
+      </div></div>
+
+  
+
+  
+    
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>Paul O'Day, 2024</span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
