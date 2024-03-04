@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Paul O&#39;Day</title>
-    <link>http://localhost:1313/</link>
+    <link>https://pauloday.com/</link>
     <description>Recent content on Paul O&#39;Day</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 03 Mar 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://pauloday.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Psychedelic Quasicrystals in Rust</title>
-      <link>http://localhost:1313/posts/rustquasi/</link>
+      <link>https://pauloday.com/posts/rustquasi/</link>
       <pubDate>Sun, 03 Mar 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/rustquasi/</guid>
+      <guid>https://pauloday.com/posts/rustquasi/</guid>
       <description>Rust quasicrystals This is part 2 of this article, where I go over the multithreaded Rust implementation. Part 1 goes more in depth on the math, so if you want to understand this program on a more abstract level that&amp;rsquo;s where to look.&#xA;The Rust version has more features than the Clojure version. You can adjust the zoom level as well offset the viewport. You can also adjust the angles of each layer independently, or make the angles of the layers change over the course of the animation, and you can adjust the speed of the animation.</description>
     </item>
     <item>
       <title>Clojure Quasicrystals</title>
-      <link>http://localhost:1313/posts/clojurequasi/</link>
+      <link>https://pauloday.com/posts/clojurequasi/</link>
       <pubDate>Wed, 28 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/clojurequasi/</guid>
+      <guid>https://pauloday.com/posts/clojurequasi/</guid>
       <description>Years ago I read an article about how to generate a neat animation of a quasicrystal. A quasicrystal is an ordered structure that is not periodic. Because it&amp;rsquo;s ordered it can fill an infinite sized space, but since it&amp;rsquo;s not periodic it doesn&amp;rsquo;t have symmetry. The classic example of this is Penrose tiles, you can use them to fill any sized space by matching the colors of the tiles, but it doesn&amp;rsquo;t create a symmetrical repeating pattern.</description>
     </item>
     <item>
       <title>About</title>
-      <link>http://localhost:1313/about/</link>
+      <link>https://pauloday.com/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/about/</guid>
+      <guid>https://pauloday.com/about/</guid>
       <description>I’m a full-stack developer with a passion for learning and building things. My coding journey began around age 11 when I started writing games in QuickBasic. This ignited my passion for learning about programming as I started a tour through various other languages and paradigms, eventually ending with Javascript as my main language - although I’m always eager to learn new things, especially when it’s about the best tool for the job.</description>
     </item>
   </channel>
