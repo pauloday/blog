@@ -3,11 +3,12 @@ title = 'Psychedelic Quasicrystals in Rust'
 date = 2024-03-03
 draft = false
 math = true
+type = "post"
 +++
 
 # Rust quasicrystals
 
-This is part 2 of [this]() article, where I go over the multithreaded Rust implementation. This will be quite a bit longer than going over the Clojure version, so I'm going to a do a part 3 where I take a look at how messing with different parameters affects the output. Part 1 goes more in depth on the math, so if you want to understand this program on a more abstract level that's where to look.
+This is part 2 of [this]() article, where I go over the multithreaded Rust implementation. Part 1 goes more in depth on the math, so if you want to understand this program on a more abstract level that's where to look.
 
 The Rust version has more features than the Clojure version. You can adjust the zoom level as well offset the viewport. You can also adjust the angles of each layer independently, or make the angles of the layers change over the course of the animation, and you can adjust the speed of the animation. It's also more documented and has a better architecture, so it should be easier to extend. We'll go over it file by file, but I won't look at every single function, just the interesting ones.
 
@@ -104,7 +105,7 @@ These are the functions to convert the 0-1 shade values into colored pixel value
 
 For the sawtooth colors we just generate a sawtooth wave going from 0 to 255 over the course of the animation. Then for each color we select a point offset by some value, which is the percent through the wave that color will start. So if the offset is 0, we select 0 from the wave for the first frame, 127 for the halfway frame, and 255 for the last. If it's 0.5 we select 127 for the first frame, 255 for the midpoint, and 126 for the last.
 
-For composite colors we take a range of shade values and a range of 8-bit color values for each color channel. Then we just convert from the shade range to the 8-bit range to get the pixel color. The ranges can overlap but they don't have to. This is an implementation of the 3 color composite mapping mentioned [here](https://www.allthesky.com/articles/imagecolor.html). Thee composite colors can be animated just like the angles, both the input and output ranges can be animated. For example, here's 7 even layers with a composite animation but no phase or angle animation:
+For composite colors we take a range of shade values and a range of 8-bit color values for each color channel. Then we just convert from the shade range to the 8-bit range to get the pixel color. The ranges can overlap but they don't have to. This is an implementation of the 3 color composite mapping mentioned [here](https://www.allthesky.com/articles/imagecolor.html). The composite colors can be animated just like the angles, both the input and output ranges can be animated. For example, here's 7 even layers with a composite animation but no phase or angle animation:
 
 ![7 layers with color animation](/quasicrystals/coloranimation.webp)
 

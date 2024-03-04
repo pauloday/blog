@@ -1,162 +1,166 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  
-    <title>Psychedelic Quasicrystals in Rust :: Paul O&#39;Day</title>
-  
-  
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-<script>
-  MathJax = {
-    tex: {
-      displayMath: [['\\[', '\\]'], ['$$', '$$']],  
-      inlineMath: [['\\(', '\\)']]                  
-    }
-  };
-</script>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <style>
+        :root {
+            --accent-color: #b293e9;
+        }
+    </style>
 
+    
+    
+    
+    
+    
+    
 
-  
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Rust quasicrystals This is part 2 of this article, where I go over the multithreaded Rust implementation. This will be quite a bit longer than going over the Clojure version, so I&amp;rsquo;m going to a do a part 3 where I take a look at how messing with different parameters affects the output. Part 1 goes more in depth on the math, so if you want to understand this program on a more abstract level that&amp;rsquo;s where to look." />
-<meta name="keywords" content="programming" />
+    
+    <title>Psychedelic Quasicrystals in Rust</title>
+    <meta name="description" content="A place to document my code and thoughts">
+    <meta name="keywords" content='blog, rust, clojure, coding, programming'>
 
-  <meta name="robots" content="noodp" />
+    <meta property="og:url" content="http://localhost:1313/posts/rustquasi/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Psychedelic Quasicrystals in Rust">
+    <meta property="og:description" content="A place to document my code and thoughts">
+    <meta property="og:image" content="http://localhost:1313/avatar.jpg">
+    <meta property="og:image:secure_url" content="http://localhost:1313/avatar.jpg">
 
-<link rel="canonical" href="https://pauloday.com/posts/rustquasi/" />
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Psychedelic Quasicrystals in Rust">
+    <meta name="twitter:description" content="A place to document my code and thoughts">
+    <meta property="twitter:domain" content="http://localhost:1313/posts/rustquasi/">
+    <meta property="twitter:url" content="http://localhost:1313/posts/rustquasi/">
+    <meta name="twitter:image" content="http://localhost:1313/avatar.jpg">
 
+    
+    <link rel="canonical" href="http://localhost:1313/posts/rustquasi/" />
 
+    
+    <link rel="stylesheet" type="text/css" href="/css/normalize.min.css" media="print">
 
+    
+    <link rel="stylesheet" type="text/css" href="/css/main.min.css">
 
+    
+    <link id="dark-theme" rel="stylesheet" href="/css/dark.min.css">
 
+    
+    <script src="/js/bundle.min.a124fc1beb7f1a890bb0466cebebd2ee9315e53c4e21bb1ef85bf7484d2568ca.js" integrity="sha256-oST8G&#43;t/GokLsEZs6&#43;vS7pMV5TxOIbse&#43;Fv3SE0laMo="></script>
 
-  
-  
-  
-  
-  
-  <link rel="stylesheet" href="https://pauloday.com/styles.css">
-
-
-
-
-
-
-
-  <link rel="shortcut icon" href="https://pauloday.com/img/theme-colors/purple.png">
-  <link rel="apple-touch-icon" href="https://pauloday.com/img/theme-colors/purple.png">
-
-
-
-<meta name="twitter:card" content="summary" />
-
-
-
-<meta property="og:locale" content="en" />
-<meta property="og:type" content="article" />
-<meta property="og:title" content="Psychedelic Quasicrystals in Rust">
-<meta property="og:description" content="Rust quasicrystals This is part 2 of this article, where I go over the multithreaded Rust implementation. This will be quite a bit longer than going over the Clojure version, so I&amp;rsquo;m going to a do a part 3 where I take a look at how messing with different parameters affects the output. Part 1 goes more in depth on the math, so if you want to understand this program on a more abstract level that&amp;rsquo;s where to look." />
-<meta property="og:url" content="https://pauloday.com/posts/rustquasi/" />
-<meta property="og:site_name" content="Paul O&#39;Day" />
-
-  
-    <meta property="og:image" content="https://pauloday.com/img/favicon/purple.png">
-  
-
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="627">
-
-
-  <meta property="article:published_time" content="2024-03-03 00:00:00 &#43;0000 UTC" />
-
-
-
-
-
-
-
-
-
-
-
-
+    
+    
 </head>
-<body class="purple">
+<body>
+        <script type="text/javascript">
+            
+            setThemeByUserPref();
+        </script><header class="header">
+    <nav class="header-nav">
 
-
-<div class="container center headings--one-size">
-
-  <header class="header">
-  <div class="header__inner">
-    <div class="header__logo">
-      <a href="https://pauloday.com/">
-  <div class="logo">
-    Paul O&#39;Day
-  </div>
-</a>
-
-    </div>
-    
-      <ul class="menu menu--mobile">
-  <li class="menu__trigger">Menu&nbsp;▾</li>
-  <li>
-    <ul class="menu__dropdown">
-      
         
-          <li><a href="/about">About</a></li>
+        <div class="avatar">
+            <a href="http://localhost:1313/">
+                <img src='/avatar.jpg' alt="avatar" />
+            </a>
+        </div>
         
-      
-      
-    </ul>
-  </li>
-</ul>
 
-    
-    
-  </div>
-  
-    <nav class="navigation-menu">
-  <ul class="navigation-menu__inner menu--desktop">
-    
-      
-        
-          <li><a href="/about" >About</a></li>
-        
-      
-    
-  </ul>
-</nav>
+        <div class="nav-title">
+            <a class="nav-brand" href="http://localhost:1313/">Paul O&#39;Day</a>
+        </div>
 
-  
+        <div class="nav-links">
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/posts/"> Posts </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/about/"> About </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/pauloday"><span data-feather='github'></span>  </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/pauloday"><span data-feather='linkedin'></span>  </a>
+            </div>
+            
+
+            <span class="nav-icons-divider"></span>
+            <div class="nav-link dark-theme-toggle">
+                <span id="dark-theme-toggle-screen-reader-target" class="sr-only"></span>
+                <a>
+                    <span id="theme-toggle-icon" data-feather="moon"></span>
+                </a>
+            </div>
+
+            <div class="nav-link" id="hamburger-menu-toggle">
+                <span id="hamburger-menu-toggle-screen-reader-target" class="sr-only">menu</span>
+                <a>
+                    <span data-feather="menu"></span>
+                </a>
+            </div>
+
+            
+            <ul class="nav-hamburger-list visibility-hidden">
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/posts/"> Posts </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/about/"> About </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/pauloday"><span data-feather='github'></span>  </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/pauloday"><span data-feather='linkedin'></span>  </a>
+                </li>
+                
+                <li class="nav-item dark-theme-toggle">
+                    <span id="dark-theme-toggle-screen-reader-target" class="sr-only">theme</span>
+                    <a>
+                        <span id="theme-toggle-icon" data-feather="moon"></span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
 </header>
+<main id="content">
+    <div class="post container">
+    <div class="post-header-section">
+        <h1>Psychedelic Quasicrystals in Rust</h1>
+        <small role="doc-subtitle"></small>
+        <p class="post-date">March 3, 2024
+        
+        </p>
 
+        <ul class="post-tags">
+        
+        </ul>
+    </div>
 
-  <div class="content">
-    
-<article class="post">
-  <h1 class="post-title">
-    <a href="https://pauloday.com/posts/rustquasi/">Psychedelic Quasicrystals in Rust</a>
-  </h1>
-  <div class="post-meta"><time class="post-date">2024-03-03</time></div>
-
-  
-  
-
-
-  
-
-  <div class="post-content"><div>
-        <h1 id="rust-quasicrystals">Rust quasicrystals<a href="#rust-quasicrystals" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
-<p>This is part 2 of <a href="/">this</a> article, where I go over the multithreaded Rust implementation. This will be quite a bit longer than going over the Clojure version, so I&rsquo;m going to a do a part 3 where I take a look at how messing with different parameters affects the output. Part 1 goes more in depth on the math, so if you want to understand this program on a more abstract level that&rsquo;s where to look.</p>
+    <div class="post-content">
+        <p>
+            <h1 id="rust-quasicrystals">Rust quasicrystals</h1>
+<p>This is part 2 of <a href="">this</a> article, where I go over the multithreaded Rust implementation. Part 1 goes more in depth on the math, so if you want to understand this program on a more abstract level that&rsquo;s where to look.</p>
 <p>The Rust version has more features than the Clojure version. You can adjust the zoom level as well offset the viewport. You can also adjust the angles of each layer independently, or make the angles of the layers change over the course of the animation, and you can adjust the speed of the animation. It&rsquo;s also more documented and has a better architecture, so it should be easier to extend. We&rsquo;ll go over it file by file, but I won&rsquo;t look at every single function, just the interesting ones.</p>
 <p>Here&rsquo;s an animation generated with 7 layers that have angles that change over the course of the animation. I don&rsquo;t think it&rsquo;s technically a quasicrystal (maybe for a few frames), but it is pretty neat:</p>
-<p><img alt="7 spinning layers" src="/quasicrystals/spin.webp"></p>
+<p><img src="/quasicrystals/spin.webp" alt="7 spinning layers"></p>
 <p>Command to generate these frames: <code>quasicrystals 200 200 0:100,0:86:100,0:72:100,0:58:100,0:44:100,0:30:100,0:16:100 20 -p -f 120 -t 4 -s 0 -c greyscale 127</code></p>
-<h2 id="optsrs">opts.rs<a href="#optsrs" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="optsrs">opts.rs</h2>
 <p>This is where the input options are defined. I used <a href="https://docs.rs/clap/latest/clap/">clap</a> to define the command line arguments, but the opts struct is generic and could be used by other Rust code if you wanted to use this as a library instead of a command line program. This would require some minor modification in <code>main.rs</code> though.</p>
-<h2 id="parsers">parse.rs<a href="#parsers" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="parsers">parse.rs</h2>
 <p>This is where the input is parsed into data structures for the generation functions to use. Except for the angles and colorizer, everything can just be parsed with built in Rust parsers as you can see in <code>parse_image</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">parse_image</span>(opts: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">Opts</span>, frame: <span style="color:#66d9ef">u32</span>) -&gt; <span style="color:#a6e22e">Image</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> Image {
@@ -211,17 +215,17 @@
 <li>Take current frame % frames per stage to get how far into the stage we are, and divide it by frames per stage to get a percent. For example, if we&rsquo;re on frame 10 and the stages are 3 frames each, we&rsquo;re 1 frame into a stage, or 1/3 of the way through.</li>
 <li>The difference between the number we&rsquo;re coming from and going to is how much the number changes over this stage, so multiply that by how far we are through the stage. Then we have to add the number we&rsquo;re coming from to get the number for this frame</li>
 </ol>
-<h2 id="crystalrs">crystal.rs<a href="#crystalrs" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="crystalrs">crystal.rs</h2>
 <p>This file is basically where we implement the actual waveform generation. I won&rsquo;t go over this it&rsquo;s just a Rust version of the Clojure code with the addition of an offset factor for each coordinate.</p>
-<h2 id="colorrs">color.rs<a href="#colorrs" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="colorrs">color.rs</h2>
 <p>These are the functions to convert the 0-1 shade values into colored pixel values. For greyscale we take a brightness factor from 0 (all black) to 255 (all white) and plug it into this formula: \(2*brightness - 255 + shade\) then convert it to an 8-bit number. This conversion will round the shade up or down and give us a greyscale image.</p>
 <p>For the sawtooth colors we just generate a sawtooth wave going from 0 to 255 over the course of the animation. Then for each color we select a point offset by some value, which is the percent through the wave that color will start. So if the offset is 0, we select 0 from the wave for the first frame, 127 for the halfway frame, and 255 for the last. If it&rsquo;s 0.5 we select 127 for the first frame, 255 for the midpoint, and 126 for the last.</p>
-<p>For composite colors we take a range of shade values and a range of 8-bit color values for each color channel. Then we just convert from the shade range to the 8-bit range to get the pixel color. The ranges can overlap but they don&rsquo;t have to. This is an implementation of the 3 color composite mapping mentioned <a href="https://www.allthesky.com/articles/imagecolor.html">here</a>. Thee composite colors can be animated just like the angles, both the input and output ranges can be animated. For example, here&rsquo;s 7 even layers with a composite animation but no phase or angle animation:</p>
-<p><img alt="7 layers with color animation" src="/quasicrystals/coloranimation.webp"></p>
+<p>For composite colors we take a range of shade values and a range of 8-bit color values for each color channel. Then we just convert from the shade range to the 8-bit range to get the pixel color. The ranges can overlap but they don&rsquo;t have to. This is an implementation of the 3 color composite mapping mentioned <a href="https://www.allthesky.com/articles/imagecolor.html">here</a>. The composite colors can be animated just like the angles, both the input and output ranges can be animated. For example, here&rsquo;s 7 even layers with a composite animation but no phase or angle animation:</p>
+<p><img src="/quasicrystals/coloranimation.webp" alt="7 layers with color animation"></p>
 <p>To generate the frames of this animation: <code>quasicrystals 150 150 7 20 -p -f 48 -t 4 -s 0 -c composite 0:.3:.6:.3:0-.3:.6:1:.6:.3,.3:0:.3:.6:.3-.6:.3:.6:1:.6,.6:.3:0:.3:.6-1:.6:.3:.6:1</code></p>
-<h2 id="outputrs">output.rs<a href="#outputrs" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="outputrs">output.rs</h2>
 <p>This is where the file writing happens. Currently there are two ways to output files, as a gif or as a series of frame images. Both of these are very simple, they just take a vector of image data structures and write them to the disk using the Rust Image library. Gif writing is supported by that library so we just pass the images along and it handles the rest. Frame writing is just a for loop that writes each image with the same library.</p>
-<h2 id="mainrs">main.rs<a href="#mainrs" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h2 id="mainrs">main.rs</h2>
 <p>This is where everything gets tied together and multithreaded. By default it uses one thread, but you can specify more with the <code>-t</code>/<code>--threads</code> options. The <code>main</code> function is pretty long we&rsquo;ll look at it in parts.</p>
 <p>First we parse the input options, check if we have a valid output file, and decide how many threads to use. This is where the <code>parse.rs</code> functions are called.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() {
@@ -292,46 +296,54 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>The threads are spawned with the <code>gen_frames_thread</code> function. I&rsquo;ll just summarize it since it&rsquo;s pretty simple. It just calculates how many frames the thread should generate using the current thread number and the total number of frames. The last thread rounds up if needed, to account for the number of frames not splitting evenly into the number of threads. Then it&rsquo;s just a for loop to call the <code>gen</code> function from <code>crystal.rs</code> for each frame. As each frame is generated, it&rsquo;s put into a struct along with the frame number and sent back to <code>main.rs</code> for final processing. This function is also where the colorizer is parsed from the command line.</p>
 <p>And that&rsquo;s it! I glossed over a bunch to save space, but this should give you a pretty good idea of how this code is structured and what it does. In the next part of this series I won&rsquo;t go over any code, instead I&rsquo;ll look at a bunch of animations like this to get a more intuitive idea of where these patterns come from.</p>
-<p><img alt="spinning waves, animated colors" src="/quasicrystals/spincolor.webp"></p>
+<p><img src="/quasicrystals/spincolor.webp" alt="spinning waves, animated colors"></p>
 <p><code>quasicrystals 150 150 0:100,0:86:100,0:72:100,0:58:100,0:44:100,0:30:100,0:16:100 20 -p -f 120 -t 4 -s 0 -c composite 0:.3:.6:.3:0-.3:.6:1:.6:.3,.3:0:.3:.6:.3-.6:.3:.6:1:.6,.6:.3:0:.3:.6-1:.6:.3:.6:1</code></p>
 
-      </div></div>
+        </p>
+        
+    </div>
 
-  
-
-  
-    
-
-  
-</article>
-
-  </div>
-
-  
-    <footer class="footer">
-  <div class="footer__inner">
-    
-      <div class="copyright copyright--user">
-        <span>Paul O'Day, 2024</span>
-    
-      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
-      </div>
-  </div>
-</footer>
-
-
-
-
-
-
-<script type="text/javascript" src="/bundle.min.js"></script>
-
-
-
-
-
-  
+    <div class="prev-next">
+        
+            
+                
+<div class="prev-post">
+    <p>
+        <a href="/posts/clojurequasi/">
+            &#8592;
+            Previous:
+            Clojure Quasicrystals
+        </a>
+    </p>
+    <p class="prev-post-date">
+        February 28, 2024
+    </p>
 </div>
 
+
+
+
+            
+        
+    </div>
+
+    
+    
+    
+</div>
+
+
+
+    
+
+        </main><footer class="footer">
+    
+    
+
+    
+    <span>
+        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
+    </span>
+</footer>
 </body>
 </html>

@@ -1,8 +1,9 @@
 +++
-title = 'CLojure Quasicrystals'
+title = 'Clojure Quasicrystals'
 date = 2024-02-28
 draft = false
 math = true
+type = "post"
 +++
 
 Years ago I read an [article](http://mainisusuallyafunction.blogspot.com/2011/10/quasicrystals-as-sums-of-waves-in-plane.html) about how to generate a neat animation of a quasicrystal. A quasicrystal is an ordered structure that is not periodic. Because it's ordered it can fill an infinite sized space, but since it's not periodic it doesn't have symmetry. The classic example of this is Penrose tiles, you can use them to fill any sized space by matching the colors of the tiles, but it doesn't create a symmetrical repeating pattern. The animation mentioned in that article is composed of overlapping sine waves rotated at different angles.

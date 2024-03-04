@@ -1,22 +1,57 @@
 baseURL = 'https://pauloday.com/'
 languageCode = 'en-us'
 title = "Paul O'Day"
-theme = 'terminal'
-[languages]
-  [languages.en]
-    title = "Paul O'Day"
-    keywords = "programming"
-    copyright = "Paul O'Day, 2024"
-    menuMore = "Show more"
-    readMore = "Read more"
-    readOtherPosts = "Read other posts"
- [languages.en.params.logo]
-    logoText = "Paul O'Day"
- [languages.en.menu]
-    [[languages.en.menu.main]]
-      identifier = "about"
-      name = "About"
-      url = "/about"
+theme = 'gokarna'
+enableRobotsTXT = true
+
+[params]
+  showPostsOnHomePage = "recent"
+  description = "A place to document my code and thoughts"
+  metaKeywords = ["blog", "rust", "clojure", "coding", "programming"]
+  avatarURL = "/avatar.jpg"
+  accentColor = "#b293e9"
+  togglePreviousAndNextButtons = "true"
+
+[menu]
+  [[menu.main]]
+    # Unique identifier for a menu item
+    identifier = "posts"
+
+    url = "/posts/"
+    
+    # You can add extra information before the name (HTML format is supported), such as icons
+    pre = ""
+
+    # You can add extra information after the name (HTML format is supported), such as icons
+    post = ""
+
+    # Display name
+    name = "Posts"
+
+    # Weights are used to determine the ordering
+    weight = 1
+   
+  [[menu.main]]
+    identifier = "about"
+	url = "/about/"
+	name = "About"
+    weight = 2
+
+  [[menu.main]]
+    identifier = "github"
+    url = "https://github.com/pauloday"
+    weight = 3
+    
+    # We use feather-icons: https://feathericons.com/
+    pre = "<span data-feather='github'></span>"
+
+  [[menu.main]]
+    identifier = "linkedin"
+    url = "https://github.com/pauloday"
+    weight = 4
+    
+    # We use feather-icons: https://feathericons.com/
+    pre = "<span data-feather='linkedin'></span>"
 [markup]
   [markup.goldmark]
     [markup.goldmark.extensions]
@@ -25,9 +60,5 @@ theme = 'terminal'
         [markup.goldmark.extensions.passthrough.delimiters]
           block = [['\[', '\]'], ['$$', '$$']]
           inline = [['\(', '\)']]
-[params]
-  custom_css = ['css/image.css']
-  themeColor = "purple"
-  centerTheme = true
 
 

@@ -1,164 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  
-    <title>CLojure Quasicrystals :: Paul O&#39;Day</title>
-  
-  
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-<script>
-  MathJax = {
-    tex: {
-      displayMath: [['\\[', '\\]'], ['$$', '$$']],  
-      inlineMath: [['\\(', '\\)']]                  
-    }
-  };
-</script>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <style>
+        :root {
+            --accent-color: #b293e9;
+        }
+    </style>
 
+    
+    
+    
+    
+    
+    
 
-  
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Years ago I read an article about how to generate a neat animation of a quasicrystal. A quasicrystal is an ordered structure that is not periodic. Because it&amp;rsquo;s ordered it can fill an infinite sized space, but since it&amp;rsquo;s not periodic it doesn&amp;rsquo;t have symmetry. The classic example of this is Penrose tiles, you can use them to fill any sized space by matching the colors of the tiles, but it doesn&amp;rsquo;t create a symmetrical repeating pattern." />
-<meta name="keywords" content="programming" />
+    
+    <title>Clojure Quasicrystals</title>
+    <meta name="description" content="A place to document my code and thoughts">
+    <meta name="keywords" content='blog, rust, clojure, coding, programming'>
 
-  <meta name="robots" content="noodp" />
+    <meta property="og:url" content="http://localhost:1313/posts/clojurequasi/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Clojure Quasicrystals">
+    <meta property="og:description" content="A place to document my code and thoughts">
+    <meta property="og:image" content="http://localhost:1313/avatar.jpg">
+    <meta property="og:image:secure_url" content="http://localhost:1313/avatar.jpg">
 
-<link rel="canonical" href="https://pauloday.com/posts/clojurequasi/" />
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Clojure Quasicrystals">
+    <meta name="twitter:description" content="A place to document my code and thoughts">
+    <meta property="twitter:domain" content="http://localhost:1313/posts/clojurequasi/">
+    <meta property="twitter:url" content="http://localhost:1313/posts/clojurequasi/">
+    <meta name="twitter:image" content="http://localhost:1313/avatar.jpg">
 
+    
+    <link rel="canonical" href="http://localhost:1313/posts/clojurequasi/" />
 
+    
+    <link rel="stylesheet" type="text/css" href="/css/normalize.min.css" media="print">
 
+    
+    <link rel="stylesheet" type="text/css" href="/css/main.min.css">
 
+    
+    <link id="dark-theme" rel="stylesheet" href="/css/dark.min.css">
 
+    
+    <script src="/js/bundle.min.a124fc1beb7f1a890bb0466cebebd2ee9315e53c4e21bb1ef85bf7484d2568ca.js" integrity="sha256-oST8G&#43;t/GokLsEZs6&#43;vS7pMV5TxOIbse&#43;Fv3SE0laMo="></script>
 
-  
-  
-  
-  
-  
-  <link rel="stylesheet" href="https://pauloday.com/styles.css">
-
-
-
-
-
-
-
-  <link rel="shortcut icon" href="https://pauloday.com/img/theme-colors/purple.png">
-  <link rel="apple-touch-icon" href="https://pauloday.com/img/theme-colors/purple.png">
-
-
-
-<meta name="twitter:card" content="summary" />
-
-
-
-<meta property="og:locale" content="en" />
-<meta property="og:type" content="article" />
-<meta property="og:title" content="CLojure Quasicrystals">
-<meta property="og:description" content="Years ago I read an article about how to generate a neat animation of a quasicrystal. A quasicrystal is an ordered structure that is not periodic. Because it&amp;rsquo;s ordered it can fill an infinite sized space, but since it&amp;rsquo;s not periodic it doesn&amp;rsquo;t have symmetry. The classic example of this is Penrose tiles, you can use them to fill any sized space by matching the colors of the tiles, but it doesn&amp;rsquo;t create a symmetrical repeating pattern." />
-<meta property="og:url" content="https://pauloday.com/posts/clojurequasi/" />
-<meta property="og:site_name" content="Paul O&#39;Day" />
-
-  
-    <meta property="og:image" content="https://pauloday.com/img/favicon/purple.png">
-  
-
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="627">
-
-
-  <meta property="article:published_time" content="2024-02-28 00:00:00 &#43;0000 UTC" />
-
-
-
-
-
-
-
-
-
-
-
-
+    
+    
 </head>
-<body class="purple">
+<body>
+        <script type="text/javascript">
+            
+            setThemeByUserPref();
+        </script><header class="header">
+    <nav class="header-nav">
 
-
-<div class="container center headings--one-size">
-
-  <header class="header">
-  <div class="header__inner">
-    <div class="header__logo">
-      <a href="https://pauloday.com/">
-  <div class="logo">
-    Paul O&#39;Day
-  </div>
-</a>
-
-    </div>
-    
-      <ul class="menu menu--mobile">
-  <li class="menu__trigger">Menu&nbsp;▾</li>
-  <li>
-    <ul class="menu__dropdown">
-      
         
-          <li><a href="/about">About</a></li>
+        <div class="avatar">
+            <a href="http://localhost:1313/">
+                <img src='/avatar.jpg' alt="avatar" />
+            </a>
+        </div>
         
-      
-      
-    </ul>
-  </li>
-</ul>
 
-    
-    
-  </div>
-  
-    <nav class="navigation-menu">
-  <ul class="navigation-menu__inner menu--desktop">
-    
-      
-        
-          <li><a href="/about" >About</a></li>
-        
-      
-    
-  </ul>
-</nav>
+        <div class="nav-title">
+            <a class="nav-brand" href="http://localhost:1313/">Paul O&#39;Day</a>
+        </div>
 
-  
+        <div class="nav-links">
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/posts/"> Posts </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="http://localhost:1313/about/"> About </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/pauloday"><span data-feather='github'></span>  </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/pauloday"><span data-feather='linkedin'></span>  </a>
+            </div>
+            
+
+            <span class="nav-icons-divider"></span>
+            <div class="nav-link dark-theme-toggle">
+                <span id="dark-theme-toggle-screen-reader-target" class="sr-only"></span>
+                <a>
+                    <span id="theme-toggle-icon" data-feather="moon"></span>
+                </a>
+            </div>
+
+            <div class="nav-link" id="hamburger-menu-toggle">
+                <span id="hamburger-menu-toggle-screen-reader-target" class="sr-only">menu</span>
+                <a>
+                    <span data-feather="menu"></span>
+                </a>
+            </div>
+
+            
+            <ul class="nav-hamburger-list visibility-hidden">
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/posts/"> Posts </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="http://localhost:1313/about/"> About </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/pauloday"><span data-feather='github'></span>  </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/pauloday"><span data-feather='linkedin'></span>  </a>
+                </li>
+                
+                <li class="nav-item dark-theme-toggle">
+                    <span id="dark-theme-toggle-screen-reader-target" class="sr-only">theme</span>
+                    <a>
+                        <span id="theme-toggle-icon" data-feather="moon"></span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
 </header>
+<main id="content">
+    <div class="post container">
+    <div class="post-header-section">
+        <h1>Clojure Quasicrystals</h1>
+        <small role="doc-subtitle"></small>
+        <p class="post-date">February 28, 2024
+        
+        </p>
 
+        <ul class="post-tags">
+        
+        </ul>
+    </div>
 
-  <div class="content">
-    
-<article class="post">
-  <h1 class="post-title">
-    <a href="https://pauloday.com/posts/clojurequasi/">CLojure Quasicrystals</a>
-  </h1>
-  <div class="post-meta"><time class="post-date">2024-02-28</time></div>
-
-  
-  
-
-
-  
-
-  <div class="post-content"><div>
-        <p>Years ago I read an <a href="http://mainisusuallyafunction.blogspot.com/2011/10/quasicrystals-as-sums-of-waves-in-plane.html">article</a> about how to generate a neat animation of a quasicrystal. A quasicrystal is an ordered structure that is not periodic. Because it&rsquo;s ordered it can fill an infinite sized space, but since it&rsquo;s not periodic it doesn&rsquo;t have symmetry. The classic example of this is Penrose tiles, you can use them to fill any sized space by matching the colors of the tiles, but it doesn&rsquo;t create a symmetrical repeating pattern. The animation mentioned in that article is composed of overlapping sine waves rotated at different angles.</p>
+    <div class="post-content">
+        <p>
+            <p>Years ago I read an <a href="http://mainisusuallyafunction.blogspot.com/2011/10/quasicrystals-as-sums-of-waves-in-plane.html">article</a> about how to generate a neat animation of a quasicrystal. A quasicrystal is an ordered structure that is not periodic. Because it&rsquo;s ordered it can fill an infinite sized space, but since it&rsquo;s not periodic it doesn&rsquo;t have symmetry. The classic example of this is Penrose tiles, you can use them to fill any sized space by matching the colors of the tiles, but it doesn&rsquo;t create a symmetrical repeating pattern. The animation mentioned in that article is composed of overlapping sine waves rotated at different angles.</p>
 <p>I thought this was extremely cool and had a lot of potential to make interesting psychedelic animations. Of course greyscale is boring, and I wanted to play around with the parameters, so I&rsquo;d have to modify the original code. For example this image is generated with 7 overlapping waves rotated evenly from 0 to 360:</p>
-<p><img alt="7 layer quasicrystal" src="/quasicrystals/7added.jpg"></p>
+<p><img src="/quasicrystals/7added.jpg" alt="7 layer quasicrystal"></p>
 <p>But what happens if angle one is 0, angle 2 is 180, and the rest are evenly split between 180-360? And what happens if we have 27 overlapping images?</p>
 <p>In an effort to answer these questions, I ported the original Haskell code to Clojure. I chose Clojure because it&rsquo;s easy to play with parts of a program using the REPL, and I knew Clojure better than Haskell. This taught me how the math works, but it was also very slow. So instead of answering my questions with the Clojure version, I ported it to Rust so I could play around with it easier since I wouldn&rsquo;t have to wait so long for animations to generate.</p>
 <p>I&rsquo;m going to split this into 2 articles to keep them focused. In this article I&rsquo;ll use the simpler Clojure implementation to explain how these images are composed6; this should give you a good understanding of how this program works on an abstract level. Don&rsquo;t worry if you don&rsquo;t know Clojure, you should still be able to understand the basics from looking at the images and my explanations. Then, in the next article I&rsquo;ll go over the more complex multi-threaded Rust implementation, and show off some cool animations.</p>
-<h1 id="how-it-works">How it works<a href="#how-it-works" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<h1 id="how-it-works">How it works</h1>
 <p>The original post does a good job of explaining the math, but I&rsquo;ll go over it again here. Each frame of these animations is composed of several waveforms projected into 2d space, rotated, and combined. Each wave form looks like a bunch of stripes - here the values from 0 to 1 are rendered as a gradient from black (0), to white (1):</p>
-<p><img alt="A waveform with no rotation" src="/quasicrystals/vertstripe.jpg"></p>
+<p><img src="/quasicrystals/vertstripe.jpg" alt="A waveform with no rotation"></p>
 <p>To animate it, we simply move the wave forward. The number that defines how far forward wave is moved is called the phase:</p>
-<p><img alt="A waveform animated" src="/quasicrystals/vertanim.gif"></p>
+<p><img src="/quasicrystals/vertanim.gif" alt="A waveform animated"></p>
 <p>And this is the Clojure code to generate one frame of animation:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>wave
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;Returns waveform, the cos of all the y-values rotated by theta and moved
@@ -178,7 +182,7 @@ $$ \frac{\cos(x\cos(\theta) + y\sin(\theta) + phase) + 1}{2} $$
 </span></span><span style="display:flex;"><span>  (for [m (range n)] (* m (/ Math/PI n))))
 </span></span></code></pre></div><p>This is done by taking each number from 0 to \(n\) and multiplying them by \(\pi\)/\(n\). These numbers will be fed into the theta argument of the wave function.</p>
 <p>Next we have to combine the images. To do this we add the numbers of each pixel together, then wrap it between 0 and 1. This means is as the summed value goes from 0 to 1 the wrapped output goes from 0 to 1, then as the sum goes from 1 to 2 the wrapped output goes from 1 to 0, then 2-3 outputs 0 to 1, etc. For example adding two perpendicular waves gives us this:</p>
-<p><img alt="2 waveforms added and wrapped" src="/quasicrystals/2added.jpg"></p>
+<p><img src="/quasicrystals/2added.jpg" alt="2 waveforms added and wrapped"></p>
 <p>This is the Clojure code to add and wrap values</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-clojure" data-lang="clojure"><span style="display:flex;"><span>(<span style="color:#66d9ef">defn </span>combine
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;Combines a list of values, and wraps the result between 1 and 0&#34;</span>
@@ -199,56 +203,64 @@ $$ \frac{\cos(x\cos(\theta) + y\sin(\theta) + phase) + 1}{2} $$
 </span></span><span style="display:flex;"><span>           (<span style="color:#a6e22e">angles</span> num-angles)))]))
 </span></span></code></pre></div><p>This function takes the x and y dimensions, phase (aka frame of animation), and how many overlapping waves to use. It&rsquo;s pretty straightforward; we just use the angles function to make a list of angles, then map the wave function over that list, then use the combine function to sum and wrap each value. This is repeated for each pixel of the image, and voila, we have the color values for a single frame.</p>
 <p>Here&rsquo;s what it looks like when we add 3, 4, and 5 layers:</p>
-<p><img alt="3 waveforms added and wrapped" src="/quasicrystals/3added.jpg"></p>
-<p><img alt="4 waveforms added and wrapped" src="/quasicrystals/4added.jpg"></p>
-<p><img alt="5 waveforms added and wrapped" src="/quasicrystals/5added.jpg"></p>
+<p><img src="/quasicrystals/3added.jpg" alt="3 waveforms added and wrapped"></p>
+<p><img src="/quasicrystals/4added.jpg" alt="4 waveforms added and wrapped"></p>
+<p><img src="/quasicrystals/5added.jpg" alt="5 waveforms added and wrapped"></p>
 <p>I&rsquo;m not sure when these start being quasicrystals, but my goal is to make neat animations so I don&rsquo;t really care. The original article used 7 layers, and 3 definitely isn&rsquo;t a quasicrystal. 4 seems like it is, so maybe it&rsquo;s every number after 3, but it might not be zoomed out enough to see the full pattern. As you add more layers you have to zoom out to see an interesting pattern, here&rsquo;s 19 layers with the same zoom as the previous images:</p>
-<p><img alt="19 waveforms added and wrapped" src="/quasicrystals/19added.jpg"></p>
+<p><img src="/quasicrystals/19added.jpg" alt="19 waveforms added and wrapped"></p>
 <p>And a zoomed out and enlarged version:</p>
-<p><img alt="19 waveforms added and wrapped, zoomed out" src="/quasicrystals/19addedsmaller.jpg"></p>
+<p><img src="/quasicrystals/19addedsmaller.jpg" alt="19 waveforms added and wrapped, zoomed out"></p>
 <p>I won&rsquo;t go into detail for writing those values to an image or generating a list of frames as there are a lot of ways to do it and the way I picked is pretty slow. The summary is: I used Java&rsquo;s <code>BufferedImage</code> class and a function to translate the 0-1 values into RGB values to output each frame as a jpg, then combined those with imagemagick into an animation. Combining them into a gif using Clojure was tricky and by that time I had already decided to make a Rust version.</p>
-<h1 id="adding-color">Adding Color<a href="#adding-color" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h1>
+<h1 id="adding-color">Adding Color</h1>
 <p>The function to translate a 0-1 value into a RGB pixel (i.e. 3 values from 0-255) is worth talking about. This is where you can get creative, there are a lot of ways to translate a value between 0 and 1 to a color. Astronomers have <a href="https://www.allthesky.com/articles/imagecolor.html">explored</a> this problem, as many telescopes only give a grayscale image, and adding color helps understand what they&rsquo;re seeing. The simplest is obviously using 0 as one color (e.g. black) and 1 as another (e.g. white) for a basic gradient. One way I came up with is to map each r, g, and b value to a sawtooth wave that goes from 0 to 255, starting with some offset. For example an offset of 0.5 would start at 128 then go through 255, back to 0, then up to 128 again over the course of the animation. I believe this is just a way of implementing an animated version of the false color composite from that astronomy page, but I could be wrong - I just made it up to get something colorful. This is 6 overlapping layers with a red offset of 0, green of 0.25, and blue of 0.5:</p>
-<p><img alt="6 added waveforms colorized" src="/quasicrystals/colorful6added.gif"></p>
+<p><img src="/quasicrystals/colorful6added.gif" alt="6 added waveforms colorized"></p>
 <p>This is very cool, but also very slow to generate, taking around 10 minutes on my old Macbook. In the next article I&rsquo;ll go over the multithreaded Rust implementation of this program which is much faster. I also added a couple more parameters to tweak (such as zoom level), so I&rsquo;ll show a gallery of animations generated with different settings. The code is on <a href="https://github.com/pauloday/quasicrystals/tree/master">Github</a>, the <a href="https://github.com/pauloday/quasicrystals/tree/clojure">Clojure</a> version is in a branch.</p>
 
-      </div></div>
+        </p>
+        
+    </div>
 
-  
-
-  
-    
-
-  
-</article>
-
-  </div>
-
-  
-    <footer class="footer">
-  <div class="footer__inner">
-    
-      <div class="copyright copyright--user">
-        <span>Paul O'Day, 2024</span>
-    
-      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
-      </div>
-  </div>
-</footer>
+    <div class="prev-next">
+        
+            
+                
 
 
-
-
-
-
-<script type="text/javascript" src="/bundle.min.js"></script>
-
-
-
-
-
-  
+<div class="next-post">
+    <p>
+        <a href="/posts/rustquasi/">
+            Next:
+            Psychedelic Quasicrystals in Rust
+            &#8594;
+        </a>
+    </p>
+        <p class="next-post-date">
+            March 3, 2024
+        </p>
 </div>
 
+
+            
+        
+    </div>
+
+    
+    
+    
+</div>
+
+
+
+    
+
+        </main><footer class="footer">
+    
+    
+
+    
+    <span>
+        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
+    </span>
+</footer>
 </body>
 </html>
