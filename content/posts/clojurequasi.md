@@ -1,6 +1,6 @@
 +++
 title = 'Clojure Quasicrystals'
-date = 2024-02-28
+date = 2024-10-28
 draft = false
 math = true
 type = "post"

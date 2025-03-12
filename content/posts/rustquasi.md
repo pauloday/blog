@@ -1,6 +1,6 @@
 +++
 title = 'Psychedelic Quasicrystals in Rust'
-date = 2024-08-03
+date = 2025-01-02
 draft = false
 math = true
 type = "post"
