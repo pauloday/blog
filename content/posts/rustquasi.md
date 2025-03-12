@@ -8,7 +8,7 @@ type = "post"
 
 # Rust quasicrystals
 
-This is part 2 of [this]() article, where I go over the multithreaded Rust implementation. Part 1 goes more in depth on the math, so if you want to understand this program on a more abstract level that's where to look.
+This is part 2 of [this](/posts/clojurequasi/) article, where I go over the multithreaded Rust implementation. Part 1 goes more in depth on the math, so if you want to understand this program on a more abstract level that's where to look.
 
 The Rust version has more features than the Clojure version. You can adjust the zoom level as well offset the viewport. You can also adjust the angles of each layer independently, or make the angles of the layers change over the course of the animation, and you can adjust the speed of the animation. It's also more documented and has a better architecture, so it should be easier to extend. We'll go over it file by file, but I won't look at every single function, just the interesting ones.
 

@@ -9,7 +9,7 @@ type = "post"
 
 # Profiling Clojure and Rust Quasicrystals
 
-I rewrote my Clojure implementation of my quasicrystal image generator to Rust for performance reasons. Before doing this I did try a couple of things to improve the Clojure performance, but after looking at a profile of the Clojure code, it became obvious that my fixes weren't addressing the core issue. I then decided to move to Rust because Rust seemed like a better tool for the job, and I wanted to learn more about it.
+I rewrote my [Clojure implementation](/posts/clojurequasi/) of my quasicrystal image generator to [Rust](/posts/rustquasi/) for performance reasons. Before doing this I did try a couple of things to improve the Clojure performance, but after looking at a profile of the Clojure code, it became obvious that my fixes weren't addressing the core issue. I then decided to move to Rust because Rust seemed like a better tool for the job, and I wanted to learn more about it.
 
 In this article we'll go over some of the things I tried to speed up my clojure code, and take a look at a flamegraph of the Clojure and Rust code to see where the performance (or lack thereof) comes from.
 

@@ -153,7 +153,7 @@
     <div class="post-content">
         <p>
             <h1 id="profiling-clojure-and-rust-quasicrystals">Profiling Clojure and Rust Quasicrystals</h1>
-<p>I rewrote my Clojure implementation of my quasicrystal image generator to Rust for performance reasons. Before doing this I did try a couple of things to improve the Clojure performance, but after looking at a profile of the Clojure code, it became obvious that my fixes weren&rsquo;t addressing the core issue. I then decided to move to Rust because Rust seemed like a better tool for the job, and I wanted to learn more about it.</p>
+<p>I rewrote my <a href="/posts/clojurequasi/">Clojure implementation</a> of my quasicrystal image generator to <a href="/posts/rustquasi/">Rust</a> for performance reasons. Before doing this I did try a couple of things to improve the Clojure performance, but after looking at a profile of the Clojure code, it became obvious that my fixes weren&rsquo;t addressing the core issue. I then decided to move to Rust because Rust seemed like a better tool for the job, and I wanted to learn more about it.</p>
 <p>In this article we&rsquo;ll go over some of the things I tried to speed up my clojure code, and take a look at a flamegraph of the Clojure and Rust code to see where the performance (or lack thereof) comes from.</p>
 <h2 id="clojure-performance-fixes">Clojure performance fixes</h2>
 <p>As a baseline, running the sample code for the Clojure version takes about 45 seconds on my machine.</p>
