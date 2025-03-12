@@ -6,8 +6,15 @@
     <description>Recent content in Posts on Paul O&#39;Day</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 02 Jan 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 11 Mar 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://pauloday.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Profiling Clojure and Rust</title>
+      <link>https://pauloday.com/posts/profiling/</link>
+      <pubDate>Tue, 11 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://pauloday.com/posts/profiling/</guid>
+      <description>&lt;h1 id=&#34;profiling-clojure-and-rust-quasicrystals&#34;&gt;Profiling Clojure and Rust Quasicrystals&lt;/h1&gt;&#xA;&lt;p&gt;I rewrote my Clojure implementation of my quasicrystal image generator to Rust for performance reasons. Before doing this I did try a couple of things to improve the Clojure performance, but after looking at a profile of the Clojure code, it became obvious that my fixes weren&amp;rsquo;t addressing the core issue. I then decided to move to Rust because Rust seemed like a better tool for the job, and I wanted to learn more about it.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Psychedelic Quasicrystals in Rust</title>
       <link>https://pauloday.com/posts/rustquasi/</link>

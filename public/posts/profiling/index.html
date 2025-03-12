@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --accent-color: #b293e9;
+        }
+    </style>
+
+    
+    
+    
+    
+    
+    
+
+    
+    <title>Profiling Clojure and Rust</title>
+    <meta name="description" content="A place to document my code and thoughts">
+    <meta name="keywords" content='blog, rust, clojure, coding, programming'>
+
+    <meta property="og:url" content="https://pauloday.com/posts/profiling/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Profiling Clojure and Rust">
+    <meta property="og:description" content="A place to document my code and thoughts">
+    <meta property="og:image" content="https://pauloday.com/avatar.jpg">
+    <meta property="og:image:secure_url" content="https://pauloday.com/avatar.jpg">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Profiling Clojure and Rust">
+    <meta name="twitter:description" content="A place to document my code and thoughts">
+    <meta property="twitter:domain" content="https://pauloday.com/posts/profiling/">
+    <meta property="twitter:url" content="https://pauloday.com/posts/profiling/">
+    <meta name="twitter:image" content="https://pauloday.com/avatar.jpg">
+
+    
+    <link rel="canonical" href="https://pauloday.com/posts/profiling/" />
+
+    
+    <link rel="stylesheet" type="text/css" href="/css/normalize.min.css" media="print">
+
+    
+    <link rel="stylesheet" type="text/css" href="/css/main.min.css">
+
+    
+    <link id="dark-theme" rel="stylesheet" href="/css/dark.min.css">
+
+    
+    <script src="/js/bundle.min.cf2616e6a1043dbb242563f40d3a18fd7e13974033d9aba8b7ee1b4abb3bce3f.js" integrity="sha256-zyYW5qEEPbskJWP0DToY/X4Tl0Az2auot&#43;4bSrs7zj8="></script>
+
+    
+    
+</head>
+<body>
+        <script type="text/javascript">
+            
+            setThemeByUserPref();
+        </script><header class="header">
+    <nav class="header-nav">
+
+        
+        <div class="avatar">
+            <a href="https://pauloday.com/">
+                <img src='/avatar.jpg' alt="avatar" />
+            </a>
+        </div>
+        
+
+        <div class="nav-title">
+            <a class="nav-brand" href="https://pauloday.com/">Paul O&#39;Day</a>
+        </div>
+
+        <div class="nav-links">
+            
+            <div class="nav-link">
+                <a href="https://pauloday.com/posts/"> Posts </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://pauloday.com/about/"> About </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/pauloday"><span data-feather='github'></span>  </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com/pauloday"><span data-feather='linkedin'></span>  </a>
+            </div>
+            
+
+            <span class="nav-icons-divider"></span>
+            <div class="nav-link dark-theme-toggle">
+                <span id="dark-theme-toggle-screen-reader-target" class="sr-only"></span>
+                <a>
+                    <span id="theme-toggle-icon" data-feather="moon"></span>
+                </a>
+            </div>
+
+            <div class="nav-link" id="hamburger-menu-toggle">
+                <span id="hamburger-menu-toggle-screen-reader-target" class="sr-only">menu</span>
+                <a>
+                    <span data-feather="menu"></span>
+                </a>
+            </div>
+
+            
+            <ul class="nav-hamburger-list visibility-hidden">
+                
+                <li class="nav-item">
+                    <a href="https://pauloday.com/posts/"> Posts </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://pauloday.com/about/"> About </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/pauloday"><span data-feather='github'></span>  </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com/pauloday"><span data-feather='linkedin'></span>  </a>
+                </li>
+                
+                <li class="nav-item dark-theme-toggle">
+                    <span id="dark-theme-toggle-screen-reader-target" class="sr-only">theme</span>
+                    <a>
+                        <span id="theme-toggle-icon" data-feather="moon"></span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+</header>
+<main id="content">
+    <div class="post container">
+    <div class="post-header-section">
+        <h1>Profiling Clojure and Rust</h1>
+        <small role="doc-subtitle"></small>
+        <p class="post-date">March 11, 2025
+        
+        </p>
+
+        <ul class="post-tags">
+        
+        </ul>
+    </div>
+
+    <div class="post-content">
+        <p>
+            <h1 id="profiling-clojure-and-rust-quasicrystals">Profiling Clojure and Rust Quasicrystals</h1>
+<p>I rewrote my Clojure implementation of my quasicrystal image generator to Rust for performance reasons. Before doing this I did try a couple of things to improve the Clojure performance, but after looking at a profile of the Clojure code, it became obvious that my fixes weren&rsquo;t addressing the core issue. I then decided to move to Rust because Rust seemed like a better tool for the job, and I wanted to learn more about it.</p>
+<p>In this article we&rsquo;ll go over some of the things I tried to speed up my clojure code, and take a look at a flamegraph of the Clojure and Rust code to see where the performance (or lack thereof) comes from.</p>
+<h2 id="clojure-performance-fixes">Clojure performance fixes</h2>
+<p>As a baseline, running the sample code for the Clojure version takes about 45 seconds on my machine.</p>
+<p>Before looking at a profile of the performance, I tried figuring out what was taking the most time. I figured since each pixel of each frame required several math function calls, that&rsquo;d be a good place to start.</p>
+<p>The first thing I did was memoize everything I could. Memoization just adding a lookup table to a function. The function is called, and the inputs/outputs are stored in a table. Then when it&rsquo;s called with those inputs again, the table is used instead of redoing the function. Generating these images involves a lot of math, specifically <code>sin</code>, <code>cos</code>, and <code>asin</code> function calls. A lot of the inputs are repeated, so I thought I could save some time memozing them. This did seem to be a little faster, but maybe not - the difference wasn&rsquo;t statistically significant.</p>
+<p>Next I tried using different JVM math functions like <code>fastmath</code> and the code shared in this JVM game dev forum <a href="https://jvm-gaming.org/t/extremely-fast-sine-cosine/55153">thread</a>. Neither of these had an impact.</p>
+<p>After some more investigation, I realized the JVM was probably already using the built in trig functions of my processor - so optimizing these was probably never going to see much if any speed increase.</p>
+<h2 id="clojure-profiling">Clojure Profiling</h2>
+<p>After realizing I couldn&rsquo;t really optimize the math part, I decided to look at a profile of the performance. I used the instructions on <a href="https://clojure-goes-fast.com/kb/profiling/clj-async-profiler/basic-usage/">clojure-goes-fast</a> to generate a flamegraph of my code:</p>
+<p><img src="/profiling/clojure_flamegraph.jpg" alt="5 Clojure code flamegraph"></p>
+<p>From looking at this I realized the bulk of the time wasn&rsquo;t spent on math but actually storing the pixels or possibly introp with the JVM. To draw the images I&rsquo;m using the <code>Graphics</code> JWT library. For each pixel I set the color and use <code>fillRect</code> to draw it. This makes it easy to set zoom levels, but is probably very inefficient - the graphics library wasn&rsquo;t really meant to be used this way, it was just easy for me to implement.</p>
+<p>You can see in the graph that the largest bars are <code>java.lang.reflect.Method.copy</code>. This is a method that copies the methods of one class to another. I&rsquo;m not sure exactly what&rsquo;s calling this method so much, but I suspect it has something to do with my approach to drawing graphics.</p>
+<p>This is where I decided I either needed to completely rework the drawing part of the code, or switch to a faster language. The graphics options for Clojure didn&rsquo;t seem great at the time, so I switched to Rust.</p>
+<h2 id="rust-profiling">Rust Profiling</h2>
+<p>The Rust code was immediately much, much faster, so I never really needed to do performance fixes. But just to compare, I profiled a run of the Rust version using <a href="https://github.com/mstange/samply">samply</a>. I also compiled Rust with <code>debug-infolevel = 1</code> as described <a href="https://nnethercote.github.io/perf-book/profiling.html">here</a>:</p>
+<p><img src="/profiling/rust_flamegraph.jpg" alt="5 Rust code flamegraph"></p>
+<p>This run was much faster, about 2 seconds vs 45 for Clojure. There&rsquo;s not much to talk about with the graph - it pretty much just runs the main functions for the program and that&rsquo;s what takes the time. The pixels are written directly as bytes to memory then to my SSD, and there&rsquo;s no JVM overhead to slow things down.</p>
+<h2 id="conclusions">Conclusions</h2>
+<p>It&rsquo;s easier to write fast graphics code in Rust than Java/Clojure. However the implementation of the Clojure version leaves a lot to be desired, I wouldn&rsquo;t be surprised if it&rsquo;s possible to get them pretty close to each other with more work. The Rust version was a lot harder to implement, but I suspect doing a fast Clojure version would be similar difficulty. That would probably involve writing the pixels to a buffer as bytes, then writing that to disk as an image - rather than using the Java graphics library to write a bunch of rects to a virtual graphics buffer.</p>
+<p>Basically Rust forces you to do things the hard but performant way, whereas Clojure lets you do things easy but non-performant. Overall I like both languages, but they each have their niche.</p>
+
+        </p>
+	
+    </div>
+
+    <div class="prev-next">
+        
+            
+                
+<div class="prev-post">
+    <p>
+        <a href="/posts/rustquasi/">
+            &#8592;
+            Previous:
+            Psychedelic Quasicrystals in Rust
+        </a>
+    </p>
+    <p class="prev-post-date">
+        January 2, 2025
+    </p>
+</div>
+
+
+
+
+            
+        
+    </div>
+
+    
+    
+    
+</div>
+
+
+
+    
+
+        </main><footer class="footer">
+    
+    
+
+    
+    <span>
+        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
+    </span>
+</footer>
+</body>
+</html>
