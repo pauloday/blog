@@ -6,6 +6,7 @@
     <style>
         :root {
             --accent-color: #b293e9;
+            --font-size: 17.5px;
         }
     </style>
 
@@ -36,7 +37,7 @@
     <meta name="twitter:image" content="https://pauloday.com/avatar.jpg">
 
     
-    <link rel="canonical" href="https://pauloday.com/tags/" />
+    <link rel="canonical" href="https://pauloday.com/tags/">
 
     
     <link rel="stylesheet" type="text/css" href="/css/normalize.min.css" media="print">
@@ -48,7 +49,7 @@
     <link id="dark-theme" rel="stylesheet" href="/css/dark.min.css">
 
     
-    <script src="/js/bundle.min.cf2616e6a1043dbb242563f40d3a18fd7e13974033d9aba8b7ee1b4abb3bce3f.js" integrity="sha256-zyYW5qEEPbskJWP0DToY/X4Tl0Az2auot&#43;4bSrs7zj8="></script>
+    <script src="/js/bundle.min.1b09328cc08f0a66f88753a7d443a71db3201adf02b034b9b7f4c29d686c25a8.js" integrity="sha256-GwkyjMCPCmb4h1On1EOnHbMgGt8CsDS5t/TCnWhsJag="></script>
 
     
     
@@ -63,7 +64,7 @@
         
         <div class="avatar">
             <a href="https://pauloday.com/">
-                <img src='/avatar.jpg' alt="avatar" />
+                <img src='/avatar.jpg' alt="avatar">
             </a>
         </div>
         
@@ -75,33 +76,33 @@
         <div class="nav-links">
             
             <div class="nav-link">
-                <a href="https://pauloday.com/posts/"> Posts </a>
+                <a href="https://pauloday.com/posts/" aria-label="posts" > Posts </a>
             </div>
             
             <div class="nav-link">
-                <a href="https://pauloday.com/about/"> About </a>
+                <a href="https://pauloday.com/about/" aria-label="about" > About </a>
             </div>
             
             <div class="nav-link">
-                <a href="https://github.com/pauloday"><span data-feather='github'></span>  </a>
+                <a href="https://github.com/pauloday" aria-label="github" ><span data-feather='github'></span>  </a>
             </div>
             
             <div class="nav-link">
-                <a href="https://github.com/pauloday"><span data-feather='linkedin'></span>  </a>
+                <a href="https://github.com/pauloday" aria-label="linkedin" ><span data-feather='linkedin'></span>  </a>
             </div>
             
 
             <span class="nav-icons-divider"></span>
             <div class="nav-link dark-theme-toggle">
-                <span id="dark-theme-toggle-screen-reader-target" class="sr-only"></span>
-                <a>
-                    <span id="theme-toggle-icon" data-feather="moon"></span>
+                <span class="sr-only dark-theme-toggle-screen-reader-target">theme</span>
+                <a aria-hidden="true" role="switch">
+                    <span class="theme-toggle-icon" data-feather="moon"></span>
                 </a>
             </div>
 
             <div class="nav-link" id="hamburger-menu-toggle">
-                <span id="hamburger-menu-toggle-screen-reader-target" class="sr-only">menu</span>
-                <a>
+                <span class="sr-only hamburger-menu-toggle-screen-reader-target">menu</span>
+                <a aria-checked="false" aria-labelledby="hamburger-menu-toggle" id="hamburger-menu-toggle-target" role="switch">
                     <span data-feather="menu"></span>
                 </a>
             </div>
@@ -110,25 +111,25 @@
             <ul class="nav-hamburger-list visibility-hidden">
                 
                 <li class="nav-item">
-                    <a href="https://pauloday.com/posts/"> Posts </a>
+                    <a href="https://pauloday.com/posts/" > Posts </a>
                 </li>
                 
                 <li class="nav-item">
-                    <a href="https://pauloday.com/about/"> About </a>
+                    <a href="https://pauloday.com/about/" > About </a>
                 </li>
                 
                 <li class="nav-item">
-                    <a href="https://github.com/pauloday"><span data-feather='github'></span>  </a>
+                    <a href="https://github.com/pauloday" ><span data-feather='github'></span>  </a>
                 </li>
                 
                 <li class="nav-item">
-                    <a href="https://github.com/pauloday"><span data-feather='linkedin'></span>  </a>
+                    <a href="https://github.com/pauloday" ><span data-feather='linkedin'></span>  </a>
                 </li>
                 
                 <li class="nav-item dark-theme-toggle">
-                    <span id="dark-theme-toggle-screen-reader-target" class="sr-only">theme</span>
-                    <a>
-                        <span id="theme-toggle-icon" data-feather="moon"></span>
+                    <span class="sr-only dark-theme-toggle-screen-reader-target">theme</span>
+                    <a role="switch">
+                        <span class="theme-toggle-icon" data-feather="moon"></span>
                     </a>
                 </li>
             </ul>
@@ -151,8 +152,13 @@
     
 
     
+
+    
+
+    
+
     <span>
-        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
+        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/gokarna-theme/gokarna-hugo">Gokarna</a>
     </span>
 </footer>
 </body>
